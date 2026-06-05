@@ -469,3 +469,9 @@ joblib.dump(
 print(
     "\nmodel.pkl saved successfully!"
 )
+import joblib
+
+# Save best model
+joblib.dump(best_model, "model.pkl")
+
+print("model.pkl saved successfully!")
