@@ -1,0 +1,50 @@
+import pandas as pd
+import pickle
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+
+# Load dataset
+df = pd.read_csv("ev_charging_dataset.csv")
+
+# Convert Date_Time to datetime
+df["Date_Time"] = pd.to_datetime(df["Date_Time"])
+
+# Create numeric features
+df["Hour"] = df["Date_Time"].dt.hour
+df["Day"] = df["Date_Time"].dt.day
+df["Month"] = df["Date_Time"].dt.month
+
+# Features
+X = df[
+    [
+        "Hour",
+        "Day",
+        "Month",
+        "State_of_Charge_%",
+        "Distance_to_Destination_km",
+        "Queue_Time_mins",
+        "Temperature_C",
+        "Fleet_Size",
+    ]
+]
+
+# Target
+y = df["Charging_Load_kW"]
+
+# Train model
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = RandomForestRegressor(
+    n_estimators=100,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+# Save model
+with open("model.pkl", "wb") as f:
+    pickle.dump(model, f)
+
+print("model.pkl created successfully!")
